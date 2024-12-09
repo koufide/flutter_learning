@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:dartz/dartz.dart';
 import 'package:fik_weather/core/error/failure.dart';
-import 'package:fik_weather/features/data/models/weather_model.dart';
+import 'package:fik_weather/features/weather/data/models/weather_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 // abstract class WeatherRemoteDataSource {
 //   Future<WeatherModel> getWeather();
@@ -26,25 +28,60 @@ import 'package:http/http.dart' as http;
 
 
 abstract class WeatherRemoteDataSource {
-  Future<WeatherModel> getWeatherForCity(String cityName);
+  // WeatherRemoteDataSource(Object object);
+  WeatherRemoteDataSource();
+
+  // Future<WeatherModel> getWeatherForCity(String cityName);
+  Future<Either> getWeatherForCity(String cityName);
 }
 
 class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
   final http.Client client;
   final String apiKey = 'YOUR_API_KEY';
+  final Dio dio;
 
-  WeatherRemoteDataSourceImpl(this.client);
+  // WeatherRemoteDataSourceImpl(this.client);
+  WeatherRemoteDataSourceImpl(this.dio);
+
+  // @override
+  // Future<WeatherModel> getWeatherForCity(String cityName) async {
+  //   final response = await client.get(
+  //     Uri.parse('https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey'),
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     return WeatherModel.fromJson(json.decode(response.body));
+  //   } else {
+  //     throw const ServerFailure('Impossible de récupérer les données météo');
+  //   }
+  // }
 
   @override
-  Future<WeatherModel> getWeatherForCity(String cityName) async {
-    final response = await client.get(
-      Uri.parse('https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey'),
-    );
+  Future<Either> getWeatherForCity(String cityName) async {
+    try {
+      final response = await dio.get(
+        // 'https://api.open-meteo.com/v1/forecast',
+        'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey',
+        queryParameters: {
+          'latitude': 52.52,
+          'longitude': 13.41,
+          'current_weather': true
+        }
+      );
 
-    if (response.statusCode == 200) {
-      return WeatherModel.fromJson(json.decode(response.body));
-    } else {
-      throw const ServerFailure('Impossible de récupérer les données météo');
+      if (response.statusCode == 200) {
+        final weatherData = response.data['current_weather'];
+        return Right(WeatherModel(
+          cityName: cityName,
+          temperature: weatherData['temperature'].toDouble(),
+          description: 'Température actuelle',
+          // iconCode: _getWeatherIcon(weatherData['weathercode'])
+        ));
+      } else {
+        return const Left(ServerFailure('Erreur de récupération des données'));
+      }
+    } catch (e) {
+      return const Left(NetworkFailure('Problème de connexion'));
     }
   }
 }

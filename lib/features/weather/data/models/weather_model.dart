@@ -24,14 +24,15 @@
 //   final double weatherCode;
 // }
 
-import 'package:fik_weather/features/domain/entities/weather.dart';
+import 'package:fik_weather/features/weather/domain/entities/weather_entity.dart';
 
-class WeatherModel extends Weather {
+class WeatherModel extends WeatherEntity {
   const WeatherModel({
     required String cityName,
     required double temperature,
     required String description,
-  }) : super(
+  }) 
+  : super(
           cityName: cityName,
           temperature: temperature,
           description: description,
@@ -39,9 +40,22 @@ class WeatherModel extends Weather {
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
     return WeatherModel(
-      cityName: json['name'],
+      cityName: json['name'] ?? 'Unknown',
       temperature: json['main']['temp'].toDouble(),
       description: json['weather'][0]['description'],
     );
   }
+
+  Map toJson() => {
+    'name': cityName,
+    'main': {'temp': temperature},
+    'weather': [
+      {
+        'description': description,
+      }
+    ]
+  };
+
+
+
 }
