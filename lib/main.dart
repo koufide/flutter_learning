@@ -1,36 +1,26 @@
 // import 'dart:io';
 
-import 'package:fik_weather/features/weather/data/datasources/weather_remote_data_source.dart';
-import 'package:fik_weather/features/weather/data/repositories/weather_repository_impl.dart';
 // import 'package:fik_weather/features/domain/repositories/weather_repository.dart';
-import 'package:fik_weather/features/weather/domain/usecases/get_weather_usecase.dart';
-import 'package:fik_weather/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:fik_weather/features/weather/presentation/pages/weather_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 import 'injection_container.dart' as di;
-
-
 
 // void main() {
 //   final client = http.Client();
 //   final weatherRemoteDataSource = WeatherRemoteDataSourceImpl(client: client );
-  
-//   final weatherRepository = WeatherRepositoryImpl(    
+
+//   final weatherRepository = WeatherRepositoryImpl(
 //     remoteDataSource: weatherRemoteDataSource
 //     );
 
 //   final  getWeather = GetWeather(weatherRepository);
 
-  
 //   runApp( MyApp(getWeather: getWeather));
 // }
 
 // class MyApp extends StatelessWidget {
 //   final GetWeather getWeather;
-  
-
 
 //    const MyApp({super.key, required this.getWeather});
 
@@ -94,17 +84,16 @@ import 'injection_container.dart' as di;
 //   }
 // }
 
-
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
-   await di.init();
+  await di.init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // const MyApp({super.key});
-  const MyApp({Key ? key}) : super(key: key);
+  const MyApp({super.key});
 
   // @override
   // Widget build(BuildContext context) {
@@ -121,7 +110,7 @@ class MyApp extends StatelessWidget {
   //     ),
   //   );
   // }
-@override
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Weather App',
@@ -135,7 +124,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-
-
 }
-

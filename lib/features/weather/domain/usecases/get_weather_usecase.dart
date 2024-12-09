@@ -1,8 +1,6 @@
 import 'package:fik_weather/core/error/failure.dart';
-import 'package:fik_weather/core/usecases/usecase.dart';
 import 'package:fik_weather/features/weather/domain/entities/weather_entity.dart';
 import 'package:fik_weather/features/weather/domain/repositories/weather_repository.dart';
-import 'package:fik_weather/features/weather/domain/usecases/no_params.dart';
 import 'package:dartz/dartz.dart';
 
 // class GetWeather implements UseCase<Weather, NoParams> {

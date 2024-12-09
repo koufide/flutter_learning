@@ -46,7 +46,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WeatherPage extends StatelessWidget {
   
-  const WeatherPage({Key? key}) : super(key: key);
+  const WeatherPage({super.key});
 
 
   @override
@@ -117,9 +117,9 @@ Widget _buildInitialInput(BuildContext context) {
             controller: cityController,
             decoration: InputDecoration(
               hintText: 'Entrez le nom d\'une ville',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               suffixIcon: IconButton(
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
                 onPressed: () {
                   if (cityController.text.isNotEmpty) {
                     context.read<WeatherBloc>().add(
@@ -130,8 +130,8 @@ Widget _buildInitialInput(BuildContext context) {
               ),
             ),
           ),
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Recherchez la météo d\'une ville',
             style: TextStyle(fontSize: 16),
           ),

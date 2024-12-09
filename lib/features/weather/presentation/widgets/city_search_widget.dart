@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CitySearchWidget extends StatefulWidget {
-  const CitySearchWidget({Key? key}) : super(key: key);
+  const CitySearchWidget({super.key});
 
   @override
   State<CitySearchWidget> createState() => _CitySearchWidgetState();

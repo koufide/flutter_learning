@@ -28,15 +28,10 @@ import 'package:fik_weather/features/weather/domain/entities/weather_entity.dart
 
 class WeatherModel extends WeatherEntity {
   const WeatherModel({
-    required String cityName,
-    required double temperature,
-    required String description,
-  }) 
-  : super(
-          cityName: cityName,
-          temperature: temperature,
-          description: description,
-        );
+    required super.cityName,
+    required super.temperature,
+    required super.description,
+  });
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
     return WeatherModel(
