@@ -1,10 +1,12 @@
 // import 'dart:io';
 
 // import 'package:fik_weather/features/domain/repositories/weather_repository.dart';
+import 'package:fik_weather/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:fik_weather/features/weather/presentation/pages/weather_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'injection_container.dart' as di;
+// import 'injection_container.dart' as di;
+import 'package:fik_weather/core/injection_container.dart' as di;
 
 // void main() {
 //   final client = http.Client();
@@ -118,8 +120,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BlocProvider(
-        create: (context) => di.sl(),
+      home: BlocProvider<WeatherBloc>(
+        create: (context) => di.sl<WeatherBloc>(),
         child: const WeatherPage(),
       ),
     );

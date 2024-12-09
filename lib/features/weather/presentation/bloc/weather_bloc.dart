@@ -50,7 +50,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 //   }
 // 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
-  final GetWeatherUsecase getWeatherUseCase;
+  final GetWeatherUseCase getWeatherUseCase;
   
   WeatherBloc(this.getWeatherUseCase) : super(WeatherInitial()) {
     on(_onFetchWeather);
@@ -64,7 +64,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     // });
   }
 
-  Future _onFetchWeather(FetchWeather event, Emitter emit){
+  Future<void> _onFetchWeather(FetchWeather event, Emitter emit) async{
+
     on<FetchWeather>((event, emit) async {
       emit(WeatherLoading());
 
@@ -74,6 +75,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         (failure) => emit(WeatherError(failure.message)),
         (weather) => emit(WeatherLoaded(weather))
       );
+
+      return;
 
     });
   }

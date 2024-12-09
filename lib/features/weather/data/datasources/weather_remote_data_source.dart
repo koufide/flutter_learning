@@ -2,6 +2,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:fik_weather/core/error/failure.dart';
 import 'package:fik_weather/features/weather/data/models/weather_model.dart';
+import 'package:fik_weather/features/weather/domain/entities/weather_entity.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 
@@ -31,7 +32,8 @@ abstract class WeatherRemoteDataSource {
   WeatherRemoteDataSource();
 
   // Future<WeatherModel> getWeatherForCity(String cityName);
-  Future<Either> getWeatherForCity(String cityName);
+  // Future<Either> getWeatherForCity(String cityName);
+  Future<Either<Failure, WeatherEntity>> getWeatherForCity(String cityName);
 }
 
 class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
@@ -40,8 +42,9 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
   final Dio dio;
 
   // WeatherRemoteDataSourceImpl(this.client);
-  WeatherRemoteDataSourceImpl(this.dio);
-
+  // WeatherRemoteDataSourceImpl({required this.dio});
+  // WeatherRemoteDataSourceImpl(this.dio);
+  WeatherRemoteDataSourceImpl({http.Client? client}):client = client ?? http.Client();
   // @override
   // Future<WeatherModel> getWeatherForCity(String cityName) async {
   //   final response = await client.get(
@@ -56,33 +59,74 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
   // }
 
   @override
-  Future<Either> getWeatherForCity(String cityName) async {
+  Future<Either<Failure, WeatherEntity>> getWeatherForCity(String cityName) async {
     try {
-      final response = await dio.get(
-        // 'https://api.open-meteo.com/v1/forecast',
-        'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey',
-        queryParameters: {
-          'latitude': 52.52,
-          'longitude': 13.41,
-          'current_weather': true
-        }
-      );
+
+  // URL de l'API Open Meteo pour les coordonnées de Berlin comme exemple
+      final url = Uri.parse('https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey');
+
+      final response = await client.get(url);
+
+
+      // final response = await dio.get(
+      //   // 'https://api.open-meteo.com/v1/forecast',
+      //   'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey',
+      //   queryParameters: {
+      //     'latitude': 52.52,
+      //     'longitude': 13.41,
+      //     'current_weather': true
+      //   }
+      // );
 
       if (response.statusCode == 200) {
-        final weatherData = response.data['current_weather'];
-        return Right(WeatherModel(
-          cityName: cityName,
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+         final weatherData = jsonResponse['current_weather'];
+
+         return Right(WeatherModel(
+          cityName: cityName, // Utilisez le nom de ville passé en paramètre
           temperature: weatherData['temperature'].toDouble(),
-          description: 'Température actuelle',
+          description: _getWeatherDescription(weatherData['weathercode']),
           // iconCode: _getWeatherIcon(weatherData['weathercode'])
         ));
+
+        // final weatherData = response.data['current_weather'];
+
+        // return Right(WeatherModel(
+        //   cityName: cityName,
+        //   temperature: weatherData['temperature'].toDouble(),
+        //   description: 'Température actuelle',
+        //   // iconCode: _getWeatherIcon(weatherData['weathercode'])
+        // ));
+
+
+
+
       } else {
         return const Left(ServerFailure('Erreur de récupération des données'));
       }
     } catch (e) {
-      return const Left(NetworkFailure('Problème de connexion'));
+      // return const Left(NetworkFailure('Problème de connexion'));
+      return Left(NetworkFailure('Erreur de connexion : ${e.toString()}'));
     }
   }
+
+  // Méthode pour obtenir une description textuelle du code météo
+  String _getWeatherDescription(int weatherCode) {
+    switch (weatherCode) {
+      case 0: return 'Ciel dégagé';
+      case 1: return 'Principalement dégagé';
+      case 2: return 'Partiellement nuageux';
+      case 3: return 'Couvert';
+      case 45: case 48: return 'Brouillard';
+      case 51: case 53: case 55: return 'Bruine légère à modérée';
+      case 61: case 63: case 65: return 'Pluie légère à modérée';
+      case 71: case 73: case 75: return 'Chute de neige légère à modérée';
+      default: return 'Conditions météorologiques inconnues';
+    }
+  }
+
+  
 }
 
 

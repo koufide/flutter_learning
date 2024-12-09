@@ -48,6 +48,7 @@ import 'package:dio/dio.dart';
 // import 'features/weather/domain/usecases/get_weather_usecase.dart';
 import 'package:fik_weather/features/weather/domain/usecases/get_weather_usecase.dart';
 // import 'features/weather/presentation/bloc/weather_bloc.dart';
+import 'package:http/http.dart' as http;
 
 final sl = GetIt.instance;
 
@@ -72,11 +73,16 @@ Future init() async {
   );
 
   // Data Sources
-  sl.registerLazySingleton(
-    () => WeatherRemoteDataSourceImpl(sl()),
+  sl.registerLazySingleton<WeatherRemoteDataSource>(
+    () => WeatherRemoteDataSourceImpl( client:  sl() ),
   );
 
   // External
   sl.registerLazySingleton(() => Dio());
+
+  // Ajoutez également l'enregistrement du client HTTP
+sl.registerLazySingleton(() => http.Client());
+
+
 }
 
