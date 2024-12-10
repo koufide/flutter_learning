@@ -14,10 +14,10 @@
 //   sl.registerLazySingleton( () => Dio() );
 
 //   // sl.registerLazySingleton(() => WeatherRemoteDataSource(sl()));
-//   sl.registerLazySingleton( 
+//   sl.registerLazySingleton(
 //     () => WeatherRemoteDataSource(
 //       sl()
-//       )  
+//       )
 //   );
 //   sl.registerLazySingleton<WeatherRepository>(
 //       () => WeatherRepositoryImpl(
@@ -34,7 +34,6 @@
 //     )
 //   );
 // }
-
 
 import 'package:fik_weather/features/weather/data/datasources/weather_remote_data_source.dart';
 import 'package:fik_weather/features/weather/data/repositories/weather_repository_impl.dart';
@@ -53,6 +52,11 @@ import 'package:http/http.dart' as http;
 final sl = GetIt.instance;
 
 Future init() async {
+
+  // Injection de Dio
+  // sl.registerLazySingleton(() => Dio());
+
+
   // BLoC
   sl.registerFactory(
     () => WeatherBloc(
@@ -74,15 +78,12 @@ Future init() async {
 
   // Data Sources
   sl.registerLazySingleton<WeatherRemoteDataSource>(
-    () => WeatherRemoteDataSourceImpl( client:  sl() ),
+    () => WeatherRemoteDataSourceImpl(client: sl()),
   );
 
   // External
   sl.registerLazySingleton(() => Dio());
 
   // Ajoutez également l'enregistrement du client HTTP
-sl.registerLazySingleton(() => http.Client());
-
-
+  sl.registerLazySingleton(() => http.Client());
 }
-
